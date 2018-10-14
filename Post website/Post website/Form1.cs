@@ -53,7 +53,7 @@ namespace Post_website
             //    MessageBox.Show("Rows must be integer and start row should be less than end row");
             //    return;
             //}
-            string path = @"E:\Freelance Projects\post on website\Faraz.xlsx";
+            string path = @"E:\Freelance Projects\WebScrapSelenium1\Faraz.xlsx";
             List<PageData> res = loadExcel(path, 9, 9);
             if (res == null)
             {
@@ -72,23 +72,28 @@ namespace Post_website
             driver.Navigate().GoToUrl(url);
             //ajax loading
             Thread.Sleep(2000);
-            var yearSelect = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Year"));
-            yearSelect = yearSelect.FindElement(By.TagName("select"));
-            var selectElement = new SelectElement(yearSelect);
+            var selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Year"));
+            selectTag = selectTag.FindElement(By.TagName("select"));
+            var selectElement = new SelectElement(selectTag);
             selectElement.SelectByText(res.ElementAt(0).Year);
 
             Thread.Sleep(1500);
-            var makeSelect = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Make"));
-            makeSelect = makeSelect.FindElement(By.TagName("select"));
-            var selectElement2 = new SelectElement(makeSelect);
-            selectElement2.SelectByText(res.ElementAt(0).Make);
+            selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Make"));
+            selectTag = selectTag.FindElement(By.TagName("select"));
+            selectElement = new SelectElement(selectTag);
+            selectElement.SelectByText(res.ElementAt(0).Make);
 
-
+            
             Thread.Sleep(1500);
-            var modelSelect = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Model"));
-            modelSelect = modelSelect.FindElement(By.TagName("select"));
-            var selectElement3 = new SelectElement(modelSelect);
-            selectElement3.SelectByText(res.ElementAt(0).Model);
+            selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Model"));
+            selectTag = selectTag.FindElement(By.TagName("select"));
+            selectElement = new SelectElement(selectTag);
+            selectElement.SelectByText(res.ElementAt(0).Model);
+
+            //Milage
+            //selectTag= driver.FindElement(By.XPath("//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]/div[1]/div[2]/label/select"));
+            //selectElement = new SelectElement(selectTag);
+            //selectElement.SelectByText(res.ElementAt(0).AnnualMiles);
 
             //firstname last name
             var FirstNameTextBox = driver.FindElement(By.CssSelector(".bq-field.bq-type-name.bq-name-FirstName"));
@@ -156,8 +161,9 @@ namespace Post_website
             
             
 
-            //var searchButton = driver.FindElement(By.ClassName("bq-type-simple-Submit"));
-            //searchButton.Click();
+            var searchButton = driver.FindElement(By.ClassName("bq-type-simple-Submit"));
+            Thread.Sleep(1000);
+            searchButton.Click();
 
 
 
