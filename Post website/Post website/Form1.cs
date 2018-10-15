@@ -20,6 +20,8 @@ namespace Post_website
 {
     public partial class Form1 : Form
     {
+        IWebDriver driver;
+        String url = "https://cds.bestquotes.com/auto/cc/#page/1";
 
         public Form1()
         {
@@ -53,8 +55,9 @@ namespace Post_website
             //    MessageBox.Show("Rows must be integer and start row should be less than end row");
             //    return;
             //}
+
             string path = @"E:\Freelance Projects\WebScrapSelenium1\Faraz.xlsx";
-            List<PageData> res = loadExcel(path, 9, 9);
+            List<PageData> res = loadExcel(path, 253, 359);
             if (res == null)
             {
                 return;
@@ -65,46 +68,56 @@ namespace Post_website
             //options.addArguments("disable-extensions");
             //options.addArguments("--start-maximized");
 
-            String url = "https://cds.bestquotes.com/auto/cc/#page/1";
+            
             String searchKeyword = textBox1.Text;
 
-            IWebDriver driver = new ChromeDriver(options);
+            driver = new ChromeDriver(options);
             driver.Navigate().GoToUrl(url);
-            //ajax loading
-            Thread.Sleep(2000);
-            var selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Year"));
-            selectTag = selectTag.FindElement(By.TagName("select"));
-            var selectElement = new SelectElement(selectTag);
-            selectElement.SelectByText(res.ElementAt(0).Year);
+            for (int i = 0; i < res.Count; i++)
+            {
+                postData(res.ElementAt(i));
+            }
 
-            Thread.Sleep(1500);
-            selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Make"));
-            selectTag = selectTag.FindElement(By.TagName("select"));
+
+        }
+        private void postData(PageData pd)
+        {
+            //ajax loading
+            //Thread.Sleep(2000);
+            new WebDriverWait(driver, TimeSpan.FromSeconds(20)).Until(ExpectedConditions.ElementExists((By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[1]/label/select/option[2]"))));
+
+            var selectTag = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[1]/label/select"));
+            var selectElement = new SelectElement(selectTag);
+            selectElement.SelectByText(pd.Year);
+            
+            //Thread.Sleep(2000);
+            new WebDriverWait(driver, TimeSpan.FromSeconds(20)).Until(ExpectedConditions.ElementExists((By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[2]/label/select/option[2]"))));
+            selectTag = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[2]/label/select"));
             selectElement = new SelectElement(selectTag);
-            selectElement.SelectByText(res.ElementAt(0).Make);
+            selectElement.SelectByText(pd.Make);
 
             
-            Thread.Sleep(1500);
-            selectTag = driver.FindElement(By.CssSelector(".bq-field.bq-type-polk.bq-name-Model"));
-            selectTag = selectTag.FindElement(By.TagName("select"));
+            //Thread.Sleep(1500);
+            new WebDriverWait(driver, TimeSpan.FromSeconds(20)).Until(ExpectedConditions.ElementExists((By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[3]/label/select/option[2]"))));
+            selectTag = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]/div[1]/div[3]/label/select"));
             selectElement = new SelectElement(selectTag);
-            selectElement.SelectByText(res.ElementAt(0).Model);
+            selectElement.SelectByText(pd.Model);
 
             //Milage
-            //selectTag= driver.FindElement(By.XPath("//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]/div[1]/div[2]/label/select"));
-            //selectElement = new SelectElement(selectTag);
-            //selectElement.SelectByText(res.ElementAt(0).AnnualMiles);
+            selectTag = driver.FindElement(By.XPath("//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]/div[1]/div[2]/label/select"));
+            selectElement = new SelectElement(selectTag);
+            selectElement.SelectByText(pd.AnnualMiles);
 
             //firstname last name
             var FirstNameTextBox = driver.FindElement(By.CssSelector(".bq-field.bq-type-name.bq-name-FirstName"));
             FirstNameTextBox = FirstNameTextBox.FindElement(By.TagName("input"));
-            FirstNameTextBox.SendKeys(res.ElementAt(0).FirstName);
+            FirstNameTextBox.SendKeys(pd.FirstName);
             var LastNameTextBox = driver.FindElement(By.CssSelector(".bq-field.bq-type-name.bq-name-LastName"));
             LastNameTextBox = LastNameTextBox.FindElement(By.TagName("input"));
-            LastNameTextBox.SendKeys(res.ElementAt(0).LastName);
+            LastNameTextBox.SendKeys(pd.LastName);
 
             // radio buttons
-            if(res.ElementAt(0).ResidenceType== "My own house")
+            if(pd.ResidenceType== "My own house")
             {
                 driver.FindElement(By.CssSelector("input[value='My own house']")).Click();
             }
@@ -113,7 +126,7 @@ namespace Post_website
                 driver.FindElement(By.CssSelector("input[value='I am renting']")).Click();
                 
             }
-            if (res.ElementAt(0).Gender == "Male")
+            if (pd.Gender == "Male")
             {
                 driver.FindElement(By.CssSelector("input[value='Male']")).Click();
             }
@@ -129,21 +142,21 @@ namespace Post_website
 
             //marital status and credit rating and currently ensured
             var eleMarital=driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[2]/div[3]/div[3]/div[1]/div[2]/label/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).MaritalStatus);
+            new SelectElement(eleMarital).SelectByText(pd.MaritalStatus);
             eleMarital = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[2]/div[3]/div[4]/div[1]/div[2]/label/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).creditRetain);
+            new SelectElement(eleMarital).SelectByText(pd.creditRetain);
             eleMarital = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[3]/div[1]/div[2]/label/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).InsuranceCompany);
+            new SelectElement(eleMarital).SelectByText(pd.InsuranceCompany);
 
 
 
             //set dates
             eleMarital = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[2]/div[3]/div[3]/div[1]/div[1]/div/div[1]/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).BirthMonth);
+            new SelectElement(eleMarital).SelectByText(pd.BirthMonth);
             eleMarital = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[2]/div[3]/div[3]/div[1]/div[1]/div/div[2]/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).BirthDay);
+            new SelectElement(eleMarital).SelectByText(pd.BirthDay);
             eleMarital = driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[2]/div[3]/div[3]/div[1]/div[1]/div/div[3]/select"));
-            new SelectElement(eleMarital).SelectByText(res.ElementAt(0).BirthYear);
+            new SelectElement(eleMarital).SelectByText(pd.BirthYear);
 
             
             
@@ -152,10 +165,10 @@ namespace Post_website
             driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[4]/div[3]/div/div[2]/input")).Click();
 
             //last part
-            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[1]/label/input")).SendKeys(res.ElementAt(0).Address);
-            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[2]/label/input")).SendKeys(res.ElementAt(0).ZipCode);
-            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[3]/label/input")).SendKeys(res.ElementAt(0).Phone);
-            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[4]/label/input")).SendKeys(res.ElementAt(0).Email);
+            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[1]/label/input")).SendKeys(pd.Address);
+            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[2]/label/input")).SendKeys(pd.ZipCode);
+            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[3]/label/input")).SendKeys(pd.Phone);
+            driver.FindElement(By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[5]/div[1]/div[4]/label/input")).SendKeys(pd.Email);
             
             
             
@@ -163,11 +176,9 @@ namespace Post_website
 
             var searchButton = driver.FindElement(By.ClassName("bq-type-simple-Submit"));
             Thread.Sleep(1000);
-            searchButton.Click();
-
-
-
-
+            //searchButton.Click();
+            driver.Navigate().GoToUrl(url);
+            driver.Navigate().Refresh();
         }
     }
 }
