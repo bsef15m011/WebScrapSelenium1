@@ -10,7 +10,7 @@ namespace Post_website
     class PageData
     {
         public string LeadId, Make, Year, Model, InsuranceCompany, FirstName, LastName, Gender, ResidenceType, BirthDay, BirthMonth, BirthYear, MaritalStatus,
-            creditRetain, Address, Phone, ZipCode, Email, Vertical, AnnualMiles,SourceId;
+            creditRetain, Address, Phone, ZipCode, Email, Vertical, AnnualMiles,SourceId,BirthDate;
         
         public static int GetRandomNumber(int min, int max)
         {
@@ -24,7 +24,7 @@ namespace Post_website
             }
         }
 
-        public object Datetime { get; private set; }
+        
         public string getRandomGender()
         {
             int x = GetRandomNumber(1, 2);
@@ -125,7 +125,7 @@ namespace Post_website
                 ResidenceType = getRandomResidenceType();
             }
 
-            string BirthDate = list.ElementAt(9);
+            BirthDate = list.ElementAt(9);
             double d = double.Parse(BirthDate);
             BirthDate = DateTime.FromOADate(d).ToString();
             string[] dates = BirthDate.Split('/');
