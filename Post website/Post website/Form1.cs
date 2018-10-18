@@ -41,13 +41,13 @@ namespace Post_website
             
             return res;
         }
-
+        int endRow = -1;
+        int strtRow = -2;
         private void button1_Click(object sender, EventArgs e)
         {
             string path = textBox1.Text.ToString();
             string startRow = textBox1.Text.ToString();
-            int endRow = -1;
-            int strtRow = -2;
+            
 
             if (!Int32.TryParse(textBox2.Text.ToString(), out strtRow) ||
                 !Int32.TryParse(textBox3.Text.ToString(), out endRow) || strtRow > endRow)
@@ -77,13 +77,13 @@ namespace Post_website
             driver.Navigate().GoToUrl(url);
             for (int i = 0; i < res.Count; i++)
             {
-                postData(res.ElementAt(i));
+                postData(res.ElementAt(i),i);
             }
 
             xls.closeMain();
             xls.closeError();
         }
-        private void postData(PageData pd)
+        private void postData(PageData pd,int row)
         {
             try
             {
@@ -182,15 +182,21 @@ namespace Post_website
                 var searchButton = driver.FindElement(By.ClassName("bq-type-simple-Submit"));
                 Thread.Sleep(1000);
                 searchButton.Click();
-                new WebDriverWait(driver, TimeSpan.FromSeconds(3)).Until(ExpectedConditions.ElementExists((By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/button"))));
+                //new WebDriverWait(driver, TimeSpan.FromSeconds(3)).Until(ExpectedConditions.ElementExists((By.XPath(@"//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[2]/button"))));
+                if(driver.FindElements(By.XPath("//*[@id='bq-form-here']/div/form/div[1]/div[1]/div/div/div[6]")).Count>0)
+                {
+                    xls.insertError(pd);
+                }
                 driver.Navigate().GoToUrl(url);
                 driver.Navigate().Refresh();
+                
             }
             catch (Exception ex)
             {
                 xls.insertError(pd);
                 driver.Navigate().GoToUrl(url);
                 driver.Navigate().Refresh();
+                
             }
             
         }

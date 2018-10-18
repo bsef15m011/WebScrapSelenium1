@@ -155,6 +155,7 @@ namespace Post_website
         }
         public void closeMain()
         {
+            //xlWorkbook.Save();
             //cleanup
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -175,7 +176,10 @@ namespace Post_website
             xlApp.Quit();
             Marshal.ReleaseComObject(xlApp);
         }
-
+        public void markStatus(int row, int col,string status)
+        {
+            xlWorksheet.Cells[row, col] = status;
+        }
         public void closeError()
         {
             errorworkbook.Save();

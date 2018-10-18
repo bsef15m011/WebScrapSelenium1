@@ -11,28 +11,31 @@ namespace Post_website
     {
         public string LeadId, Make, Year, Model, InsuranceCompany, FirstName, LastName, Gender, ResidenceType, BirthDay, BirthMonth, BirthYear, MaritalStatus,
             creditRetain, Address, Phone, ZipCode, Email, Vertical, AnnualMiles,SourceId,BirthDate;
-        
-        public static int GetRandomNumber(int min, int max)
-        {
-            using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
-            {
-                byte[] rno = new byte[5];
-                rg.GetBytes(rno);
-                int randomvalue = BitConverter.ToInt32(rno, 0);
-                randomvalue = (randomvalue % (max - min+1)) + min;
-                return randomvalue;
-            }
-        }
+        Random rand = new Random();
+        //public static int GetRandomNumber(int min, int max)
+        //{
+        //    using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
+        //    {
+        //        byte[] rno = new byte[5];
+        //        rg.GetBytes(rno);
+        //        int randomvalue = BitConverter.ToInt32(rno, 0);
+        //        randomvalue = (randomvalue % (max - min+1)) + min;
+        //        return randomvalue;
+        //    }
+        //}
 
-        
+        public int GetRandomNumber(int min, int max)
+        {
+            return rand.Next(min,max);
+        }
         public string getRandomGender()
         {
-            int x = GetRandomNumber(1, 2);
+            int x = GetRandomNumber(1, 117)%2;
             return (x == 1 ? "Male" : "Female");
         }
         public string getRandomResidenceType()
         {
-            int x = GetRandomNumber(1, 2);
+            int x = GetRandomNumber(1, 100)%2;
             return (x == 1 ? "My own house" : "I am renting");
         }
         public string getRandomMatrtalStatus()
